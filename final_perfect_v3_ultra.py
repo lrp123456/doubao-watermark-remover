@@ -79,10 +79,10 @@ class UltraWatermarkRemover:
         # 根据分辨率调整水印位置
         if self.scale_factor > 1:
             for region in self.watermark_regions:
-                region["x"] *= self.scale_factor
-                region["y"] *= self.scale_factor
-                region["w"] *= self.scale_factor
-                region["h"] *= self.scale_factor
+                region["x"] = int(region["x"] * self.scale_factor)
+                region["y"] = int(region["y"] * self.scale_factor)
+                region["w"] = int(region["w"] * self.scale_factor)
+                region["h"] = int(region["h"] * self.scale_factor)
         
         print(f"\n{'='*70}")
         print(f"📹 最终完美超清版 v3.1 - 极致画质水印去除")
@@ -123,13 +123,17 @@ class UltraWatermarkRemover:
         创建精确的水印掩码
         使用多算法融合检测 + 智能内容识别
         """
-        x, y, w, h = region["x"], region["y"], region["w"], region["h"]
+        # 确保坐标是整数
+        x = int(region["x"])
+        y = int(region["y"])
+        w = int(region["w"])
+        h = int(region["h"])
         
         # 边界检查和修正
-        x = max(0, min(x, self.output_width - 1))
-        y = max(0, min(y, self.output_height - 1))
-        w = min(w, self.output_width - x)
-        h = min(h, self.output_height - y)
+        x = max(0, min(x, frame.shape[1] - 1))
+        y = max(0, min(y, frame.shape[0] - 1))
+        w = min(w, frame.shape[1] - x)
+        h = min(h, frame.shape[0] - y)
         
         if w <= 0 or h <= 0:
             return np.zeros(frame.shape[:2], dtype=np.uint8)
