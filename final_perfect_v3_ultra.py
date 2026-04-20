@@ -454,6 +454,26 @@ class UltraWatermarkRemover:
         print(f"{'='*70}\n")
 
 
+def process_video(input_path: str, output_path: str) -> bool:
+    """
+    便捷函数：处理单个视频文件
+    
+    Args:
+        input_path: 输入视频路径
+        output_path: 输出视频路径
+        
+    Returns:
+        bool: 处理是否成功
+    """
+    try:
+        remover = UltraWatermarkRemover(input_path, enhance_resolution=True)
+        remover.process(output_path)
+        return True
+    except Exception as e:
+        print(f"❌ 处理失败：{e}")
+        return False
+
+
 def send_video_to_qq(video_path: str, chat_id: str):
     """发送视频到 QQ"""
     # 读取配置
